@@ -5,10 +5,52 @@ const User = require('../models/userModel');
 //@desc Get Songs
 //@route GET /api/songs
 //@access Private
-
 const getSongs = asyncHandler(async (req, res) => {
-    const songs = await Song.find({user: req.user.id});
+    // Get songs where the user id matches or if it is likedBy the user
+    let songs = await Song.find({
+        $or: [
+            { user: req.user.id },
+            { likedBy: req.user.id }
+        ]
+    });
+    if(req.params.query){
+        const query = req.params.query.toLowerCase();
+        if(query === "popularity"){
+            songs.sort((a, b) => b.likes - a.likes);
+        } else if(query === "recent"){
+            songs.sort((a, b) => b.createdAt - a.createdAt);
+        } else if(query === "alphabetical"){
+            songs.sort((a, b) => a.text.localeCompare(b.text));
+        } else if(query === "random") {
+            songs.sort((a, b) => 0.5 - Math.random());
+        }else if(query === "comments"){
+            songs.sort((a, b) => b.comments.length - a.comments.length);
+        } else if(query === 'search') {
+            console.log(req.body)
+            let searchItem = req.body.package;
+            songs = songs.filter(song => song.text.toLowerCase().includes(searchItem.toLowerCase()));
+        } else if(query === 'tags') {
+            if(!req.params.package){
+                return res.status(200).json(songs);
+            }
+            let tags = req.params.package.split(',');
+            // remove any tags that are empty
+            tags = tags.filter(tag => tag !== '');
+            // See if the song has all of the tags if not remove it
+            songs = songs.filter(song => {
+                let songTags = song.tags.map(tag => tag.toLowerCase());
+                let songHasAllTags = true;
+                for(let i = 0; i < tags.length; i++){
+                    if(!songTags.includes(tags[i].toLowerCase())){
+                        songHasAllTags = false;
+                    }
+                }
+                return songHasAllTags;
+            })
+        }
+    }
     res.status(200).json(songs);
+    
 });
 //@desc Set Songs
 //@route POST /api/songs
@@ -24,7 +66,8 @@ const setSong = asyncHandler (async (req, res) => {
         likes: 0,
         comments: [],
         link: req.body.link,
-        user: req.user.id
+        user: req.user.id,
+        tags: req.body.tags,
     });
     res.status(200).json(song);
 });
@@ -80,9 +123,12 @@ const deleteSong = asyncHandler (async (req, res) => {
 //@route GET /api/songs/getPublicSongs
 //@access Public
 const getPublicSongs = asyncHandler (async (req, res) => {
-    const songs = await Song.find({isPrivate: false});
+    let songs = await Song.find({isPrivate: false});
+    console.log("hitting getPublicSongs");
+    console.log(req.params.query);
     if(req.params.query){
         const query = req.params.query.toLowerCase();
+        console.log(query)
         if(query === "popularity"){
             songs.sort((a, b) => b.likes - a.likes);
         } else if(query === "recent"){
@@ -91,12 +137,30 @@ const getPublicSongs = asyncHandler (async (req, res) => {
             songs.sort((a, b) => a.text.localeCompare(b.text));
         } else if(query === "random") {
             songs.sort((a, b) => 0.5 - Math.random());
-        }else if(query === "comments"){
+        } else if(query === "comments"){
             songs.sort((a, b) => b.comments.length - a.comments.length);
         } else if(query === 'search') {
             console.log(req.body)
             let searchItem = req.body.package;
-            songs.filter(song => song.text.toLowerCase().includes(searchItem.toLowerCase()));
+            songs = songs.filter(song => song.text.toLowerCase().includes(searchItem.toLowerCase()));
+        } else if(query === 'tags') {
+            if(!req.params.package){
+                return res.status(200).json(songs);
+            }
+            let tags = req.params.package.split(',');
+            // remove any tags that are empty
+            tags = tags.filter(tag => tag !== '');
+            // See if the song has all of the tags if not remove it
+            songs = songs.filter(song => {
+                let songTags = song.tags.map(tag => tag.toLowerCase());
+                let songHasAllTags = true;
+                for(let i = 0; i < tags.length; i++){
+                    if(!songTags.includes(tags[i].toLowerCase())){
+                        songHasAllTags = false;
+                    }
+                }
+                return songHasAllTags;
+            })
         }
     }
     res.status(200).json(songs);

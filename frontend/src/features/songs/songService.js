@@ -30,26 +30,48 @@ const changeSong = async (song, token) => {
             Authorization: `Bearer ${token}`
         }
     }
-    console.log('song: ', song)
+
     const response = await axios.put(API_URL+ song._id, song, config);
     return response.data;
 }
 
 // get all songs
-const getSongs = async (token) => {
+const getSongs = async (query, token) => {
     const config = {
         headers: {
             Authorization: `Bearer ${token}`
         }
     }
-    const response = await axios.get(API_URL, config);
+    let response;
+    if(typeof query === 'object' && query != null){
+        console.log("query: ", query)
+        //Convert query package to a string seperated by commas
+        let packageString = '';
+        for(let i = 0; i < query.package.length; i++){
+            packageString += query.package[i] + ',';
+        }
+        response = await axios.get(API_URL + query.query + '/' + packageString, config);
+    }
+    else if(query){
+        console.log("sending a query")
+        response = await axios.get(API_URL + query, config);
+    } else {
+        console.log("sending no query")
+        response = await axios.get(API_URL, config);
+    }
+    console.log("response: ", response)
     return response.data;
     
 }
 const getPublicSongs = async (query) => {
     let response;
     if(typeof query === 'object'){
-        response = await axios.get(API_URL + 'getPublicSongs/' + query.search, query.package);
+        let packageString = '';
+        for(let i = 0; i < query.package.length; i++){
+            packageString += query.package[i] + ',';
+        }
+        console.log(API_URL + 'getPublicSongs/' + query.query + '/' + packageString)
+        response = await axios.get(API_URL + 'getPublicSongs/' + query.query + '/' + packageString);
     }
     else if(query){
         response = await axios.get(API_URL + 'getPublicSongs/' + query);

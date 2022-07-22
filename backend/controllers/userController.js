@@ -99,10 +99,29 @@ const generateToken = (user) => {
         expiresIn: process.env.JWT_EXPIRES_IN
     });
 }
-
+//@desc Get name by id
+//@route GET /api/users/:id
+//@access Public
+const getUserById = asyncHandler (async (req, res) => {
+    // return all names by id
+    const user = await User.findById(req.params.id);
+    let username = "";
+    if(user){
+        username = user.name;
+    }
+    if(!user){
+        res.status(400).json({
+            success: false,
+            error: 'User does not exist'
+        });
+        throw new Error('User does not exist');
+    }
+    res.status(200).json(username);
+});
 
 module.exports = {
     registerUser,
     loginUser,
     getMe,
+    getUserById
 }

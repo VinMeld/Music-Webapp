@@ -23,7 +23,9 @@ export const Homepage = () => {
             <img src="https://cdn.mos.cms.futurecdn.net/y9siWhBdEnkwL9HhGakpQK.jpg" style={{width: "25%", height: "25%"}}alt="music" />
             <nav style={{display: "flex", alighItems:"center", flexDirection: 'column', flexWrap: 'wrap'}}>
                 <Link to="/songs">Songs</Link>
-                <Link to="/favouritesongs">Favorite Songs</Link>
+                {user &&
+                    <Link to="/favouritesongs">Favorite Songs</Link>
+                }
                 {user ? (
                     <div>
                         <Button variant="contained" color="primary" onClick={()=>{

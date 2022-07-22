@@ -1,8 +1,8 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import { CardMedia } from '@mui/material';
+import { CardMedia, Chip } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import IconButton from '@mui/material/IconButton';
 import FavorteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -10,10 +10,13 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import Button from '@mui/material/Button';
 import {useDispatch, useSelector} from 'react-redux';
 import {deleteSong, changeSong, modifyLikeSong} from '../features/songs/songSlice';
+import {getUser} from "../features/auth/authSlice";
 import {toast} from 'react-toastify';
 import EditIcon from '@mui/icons-material/Edit';
+import axios from 'axios';
 export const SongInfo = (props) => {
     const dispatch = useDispatch();
+    const [username, setUsername] = useState("");
     const {isSuccess, isError, message} = useSelector(state => state.songs);
     const {user} = useSelector(state => state.auth);
     useEffect(() => {
@@ -21,6 +24,11 @@ export const SongInfo = (props) => {
             toast.error(message);
         }
     }, [isError, message]);
+    useEffect(() => {
+        axios.get('/api/users/' + props.song.user).then(res => {
+            setUsername(res.data);
+        });
+    }, [props.song.user]);
     const handlePublish = (song) => {
         let newSong = {...song, isPrivate: !song.isPrivate};
         dispatch(changeSong(newSong));
@@ -77,7 +85,16 @@ export const SongInfo = (props) => {
                     }
                     </div>
                 }
-
+                <div>
+                    {
+                        props.song.tags && props.song.tags.map(tag => {
+                        return <div> <Chip key={tag} label={tag} /> </div>
+                    })
+                    }
+                </div>
+                <Typography variant="body2" color="textSecondary" component="p">
+                    {props.song.likes} likes
+                </Typography>
                 { user &&  props.song.user === user.user.id &&
                     <IconButton aria-label="remove" onClick={() => {
                         dispatch(deleteSong(props.song._id))}} >
@@ -95,11 +112,10 @@ export const SongInfo = (props) => {
                 }
                 </div>
                 <div>
-                    <Typography variant="body2" color="textSecondary" component="p">
-                        {props.song.likes} likes
-                    </Typography>
+                <Typography variant="body2" color="textSecondary" component="p">
+                    Creator: {username ? username : "Loading..."}
+                </Typography>
                 </div>
-
             </CardContent>
         </Card>
         </div>

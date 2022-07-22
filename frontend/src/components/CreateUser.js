@@ -7,8 +7,8 @@ import {register, reset} from '../features/auth/authSlice';
 import Button from '@mui/material/Button';
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
-
 export const CreateUser = () => {
+    console.log(process.env.SECRET_TOKEN);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -22,7 +22,6 @@ export const CreateUser = () => {
     const [showConfirmedPassword, setShowConfirmedPassword] = useState(false);
     const handleClickShowConfirmedPassword = () => setShowConfirmedPassword(!showConfirmedPassword);
     const handleMouseDownConfirmedPassword = () => setShowConfirmedPassword(!showConfirmedPassword);
-
     useEffect(() => {
         if(isSuccess){
             toast.success("User created successfully");
@@ -35,6 +34,40 @@ export const CreateUser = () => {
     }, [user, isError, isSuccess, message, navigate, dispatch]);
     if(isLoading){
         return <CircularProgress />;
+    }
+    const registerUserAndCheckFields = () => {
+        if(email.length === 0){
+            toast.error( "Email is required");
+            return ;
+        }
+        if(!email.includes("@")){
+            toast.error( "Give a real email!");
+            return ;
+        }
+        if(!email.includes(".")){
+            toast.error( "Give a real email!");
+            return ;
+        }
+        if(password.length === 0){
+            toast.error( "Password is required");
+            return ;
+        }
+        if(password.length < 4){
+            toast.error( "Password must be at least 4 characters");
+            return ;
+        }
+        if(confirmPassword !== password){
+            toast.error( "Passwords must match");
+            return ;
+        }
+        if(username.length === 0){
+            toast.error( "Username is required");
+            return ;
+        }
+        const userData= {
+            name:username, email, password
+        }
+        dispatch(register(userData));
     }
     return(
         <div>
@@ -103,11 +136,8 @@ export const CreateUser = () => {
             </FormControl>
             <Button variant="contained" color="primary" onClick={() => {
                 if (password === confirmPassword){
-                    console.log("passwords match");
-                    const userData= {
-                        name:username, email, password
-                    }
-                    dispatch(register(userData));
+                    registerUserAndCheckFields(email, password, username);
+
                 }
                 else{
                     toast.error('Passwords do not match!')

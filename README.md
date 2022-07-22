@@ -5,14 +5,19 @@
 - [x] Add a publish button
 - [x] Fix login switch
 - [ ] Fix search for songs
-- [ ] Add hashtags
-- [ ] Add sort by hashtags
+- [x] Add hashtags
+- [x] Add sort by hashtags
 - [x] Allow for likes 
-- [ ] Fix youtube links
-- [ ] Put in set start/end time when adding song
-- [ ] Check for proper email/username
+- [x] Fix youtube links
+- [x] Put in set start/end time when adding song
+- [x] Check for proper email/username
 - [ ] Add proper documentation and comments :(
-- [ ] Push to GitHub
+- [x] Push to GitHub
+- [x] Add in created by in usergrid
+- [ ] Fix the user bug when you go in icognito 
+    Refactor everything
+  - [ ] Rename files, create new components and different folders
+- [ ] Combine searches (tags & search/sort)
 
 ## Later
 - [ ] Fix UI (Will need to expand on this)

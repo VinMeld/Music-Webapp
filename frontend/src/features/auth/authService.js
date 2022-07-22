@@ -25,9 +25,15 @@ const login = async (userData) => {
   
     return response.data
   }
+// Get user by id
+const getUser = async (id) => {
+    const response = await axios.get(API_URL + id);
+    return response.data;
+}
 const authService = {
     register,
     logout,
-    login
+    login,
+    getUser
 }
 export default authService;

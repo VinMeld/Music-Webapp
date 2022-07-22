@@ -41,17 +41,19 @@ function Navbar() {
               <Link to="/" >
                 Home
               </Link>
+              {user && 
+              
               <Link to="/favouritesongs" >
                 Favourite Songs
               </Link>
+              }
               <Link to="/songs" >
                 Songs
               </Link>
               
               <FormControlLabel
-              value="login"
-              control={<Switch color="primary" />}
-              label="login"
+              label= {user ? "loggedin" : "loggedout"}
+              control={<Switch color="primary" checked={user ? true : false} />}
               labelPlacement="start"
               disabled={true}
             />

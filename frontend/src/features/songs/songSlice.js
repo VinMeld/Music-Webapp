@@ -101,6 +101,7 @@ export const getPublicSongs = createAsyncThunk(
     'songs/getPublicSongs',
     async (query) => {
         try {
+            console.log("query: ", query)
             return await songService.getPublicSongs(query);
         } catch (error) {
             let message =
@@ -119,10 +120,10 @@ export const getPublicSongs = createAsyncThunk(
 // get all songs
 export const getSongs = createAsyncThunk(
     'songs/getAll',
-    async (_,thunkAPI) => {
+    async (query,thunkAPI) => {
         try {
             const token = thunkAPI.getState().auth.user.token;
-            return await songService.getSongs(token);
+            return await songService.getSongs(query, token);
         } catch (error) {
             let message =
 
@@ -131,8 +132,8 @@ export const getSongs = createAsyncThunk(
                     error.response.data.message) ||
                 error.message ||
                 error.toString()
-            if(error.response.data.error){
-                message = error.response.data.error;
+            if(error.response.data.message){
+                message = error.response.data.message;
             }
             return thunkAPI.rejectWithValue(message)
         }

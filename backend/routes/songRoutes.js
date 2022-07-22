@@ -6,5 +6,8 @@ router.route('/').get(protect, getSongs).post(protect, setSong);
 router.route('/:id').put(protect, changeSong).delete(protect, deleteSong);
 router.route('/getPublicSongs').get(getPublicSongs);
 router.route('/getPublicSongs/:query').get(getPublicSongs);
+router.route('/:query').get(protect, getSongs);
+router.route('/:query/:package').get(protect, getSongs);
+router.route('/getPublicSongs/:query/:package').get(getPublicSongs);
 router.route('/:id/:userId').put(likeSong);
 module.exports = router;

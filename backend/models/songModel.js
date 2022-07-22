@@ -44,6 +44,10 @@ const songSchema = mongoose.Schema({
         type: String,
         required: [true, 'Song link is required'],
     },
+    tags: [{
+        type: String,
+        default: '',
+    }],
 },{
     timestamps: true,
 })
