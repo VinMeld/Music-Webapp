@@ -1,0 +1,10 @@
+const express = require('express');
+const router = express.Router();
+const { getPublicSongs, getSongs, changeSong, deleteSong, setSong, likeSong } = require('../controllers/songController');
+const {protect} = require('../middleware/authMiddleware');
+router.route('/').get(protect, getSongs).post(protect, setSong);
+router.route('/:id').put(protect, changeSong).delete(protect, deleteSong);
+router.route('/getPublicSongs').get(getPublicSongs);
+router.route('/getPublicSongs/:query').get(getPublicSongs);
+router.route('/:id/:userId').put(likeSong);
+module.exports = router;
