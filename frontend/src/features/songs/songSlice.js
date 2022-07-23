@@ -144,6 +144,9 @@ export const songSlice = createSlice({
     initialState,
     reducers: {
         reset: (state) => initialState,
+        setSongs: (state, action) => {
+            state.songs = action.payload
+        }
     },
     extraReducers: (builder) => {
         builder
@@ -242,4 +245,5 @@ export const songSlice = createSlice({
     }
 });
 export const {reset} = songSlice.actions;
+export const {setSongs} = songSlice.actions;
 export default songSlice.reducer;

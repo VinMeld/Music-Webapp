@@ -20,8 +20,9 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useEffect } from 'react';
 import {createSong} from '../features/songs/songSlice';
-import {getSongs, reset, getPublicSongs} from '../features/songs/songSlice';
+import {getSongs, reset, getPublicSongs, setSongs} from '../features/songs/songSlice';
 import ChipsArray from './helperComponents/Tags.js';
+import axios from 'axios';
 export const UserGrid = (props) => {
     
     const [createNewSong, setCreateNewSong] = useState(false);
@@ -39,28 +40,53 @@ export const UserGrid = (props) => {
     const {songs, isError, isLoading, isSuccess, message} = useSelector(state => state.songs);
     const [selectedTags, setSelectedTags] = useState([]);
     useEffect (() => {
+        // // axios post request to filterCurrentSongs/:tags to get songs with tags and send body of songs
+        // let packageString = '';
+        // for(let i = 0; i < selectedTags.length; i++){
+        //     packageString += selectedTags[i] + ',';
+        // }
+        // console.log(selectedTags);
+        // console.log(packageString);
+        // if(packageString){
+        //     // if you remove a filter, I still need to parse all the songs with that given tag. 
+        //     // So I need to send the whole array of songs
+            
+        //     axios.post('/api/songs/filterCurrentSongs/' + packageString, {songs}
+        //     ).then(res => {
+        //         console.log(res.data);
+        //         dispatch(setSongs(res.data));
+        //     })
+        //     return() => {
+        //         dispatch(reset());
+        //     }
+        // } else {
+        //     dispatch(getSongs());
+        // }
         dispatch(getSongs({query: 'tags', package: selectedTags}));
         return() => {
             dispatch(reset());
         }
-    }, [selectedTags, dispatch]);
+    }, [selectedTags]);
     const checkYoutube = (url) => {
-        if(url.includes("youtube") && url.includes("watch")){
+        if(url.includes("youtube") || url.includes("youtu.be")){
             return true;
         }
         return false;
     }
+    const retrieveID = (url) => {
+        var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        var match = url.match(regExp);
+        return match && match[2].length === 11 ? match[2] : null;
+    }
     const setYoutubeUrl = (url) => {
         if(checkYoutube(url)){
-            console.log("INCLUDES YOUTUBE");
-            let id = url.split("=")[1];
-            if (id.includes("?")){
-                id = id.split("?")[0];
+            let id  = retrieveID(url);
+            if(!id){
+                toast.error("Invalid Youtube Link");
+                return "";
             }
-            
             let startAt = parseInt(startAtMinutes)*60 + parseInt(startAtSeconds);
             let endAt = parseInt(endAtMinutes)*60 + parseInt(endAtSeconds);
-            console.log(startAt, endAt);
             return (`https://www.youtube.com/embed/${id}?start=${startAt}&end=${endAt}`);
      }
     }
@@ -81,18 +107,18 @@ export const UserGrid = (props) => {
         return <CircularProgress />;
     }
     const checkIfSongExists = (title, currentVideo) => {
+        // Redo this guy
         if(songs.find(s => s.text === title || s.link === currentVideo)){
             return true;
         }
-        console.log(title);
         return false;
     }
     const addSong = (title, description, currentVideo) => {
-        currentVideo = setYoutubeUrl(currentVideo);
         if(!title || !description || !currentVideo){
             toast.error("Please fill out all fields");
             return;
         }
+        currentVideo = setYoutubeUrl(currentVideo);
         if(checkIfSongExists(title, currentVideo)){
             toast.error("Song name or timestamps already exists");
             return;
@@ -101,19 +127,27 @@ export const UserGrid = (props) => {
         setCreateNewSong(false); setTitle(""); setDescription(""); setVideo(""); setStartAtMinutes(0); setStartAtSeconds(0); setEndAtMinutes(0); setEndAtSeconds(0); 
     }
     const searchForSong = (e) => {
-        console.log("search");
-        let searchObject = {
-            query: 'search',
-            package: e.target.value
+        let searchTerm = e.target.value.trim();
+        console.log(searchTerm);
+        if(searchTerm){
+            axios.post('/api/songs/searchCurrentSongs/'+ searchTerm, {songs}
+            ).then(res => {
+                dispatch(setSongs(res.data));
+            })
+        } else {
+            if(selectedTags.length > 0){
+                dispatch(getSongs({query: 'tags', package: selectedTags}));
+            }
+            else{
+                dispatch(getSongs());
+            }
         }
-        dispatch(getSongs(searchObject));
     }
  
     let tagsList = []
     if(songs){
         //remove duplicates from tagsList
         if(songs.length > 0){
-            console.log(songs);
             songs.forEach(song => {
                 song.tags.forEach(tag => {
                     if(!tagsList.includes(tag)){
@@ -122,20 +156,28 @@ export const UserGrid = (props) => {
                 })
             })
         }
-        console.log('tagsList', tagsList);
+    }
+    const sortByQuery = (query) => {
+        // Send a axios request to the server endpoint of sortCurrentSongs/:query with the
+        // body being the current songs and the query being the query
+        // Then dispatch the action to update the state
+        axios.post('/api/songs/sortCurrentSongs/'+ query, {songs}
+        ).then(res => {
+            dispatch(setSongs(res.data));
+        })
     }
     return(
         <div style={style.main}>
             <div style={style.header}>
                 <h1>Welcome {user && user.user.name}!</h1>
                 <h2>Your songs!</h2>
-                <Button variant="contained" color="primary" onClick={() => dispatch(getSongs("popularity"))}>
+                <Button variant="contained" color="primary" onClick={() => sortByQuery("popularity")}>
                 Sort by popularity
             </Button>
-            <Button variant="contained" color="primary" onClick={() => dispatch(getSongs("recent"))}>
+            <Button variant="contained" color="primary" onClick={() => sortByQuery("recent")}>
                 Sort by most recent
             </Button>
-            <Button variant="contained" color="primary" onClick={() => dispatch(getSongs("alphabetical"))}>
+            <Button variant="contained" color="primary" onClick={() => sortByQuery("alphabetical")}>
                 Sort by alphabetical
             </Button>
             <div>

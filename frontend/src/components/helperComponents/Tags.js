@@ -9,9 +9,20 @@ const ListItem = styled('li')(({ theme }) => ({
 }));
 
 export default function ChipsArray(props) {
-  const [chipData, setChipData] = React.useState([
-    { key: 0, label: 'Boogie Woogie' },
-  ]);
+  let defaultValue = []
+  console.log(props.tags)
+  if(props.tags){
+    // I need to add keys, and change the props.tags to labels and use the index as key
+    defaultValue = props.tags.map((tag, index) => {
+      return {
+        label: tag,
+        key: index
+      }
+    })
+  } else {
+    defaultValue = [{ key: 0, label: 'Boogie Woogie' }];
+}
+  const [chipData, setChipData] = React.useState(defaultValue);
   const [newTag, setNewTag] = React.useState('');
 
   const handleDelete = (chipToDelete) => () => {

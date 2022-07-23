@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import { CardMedia, Chip } from '@mui/material';
+import { CardMedia, Chip, InputLabel, OutlinedInput, TextField } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import IconButton from '@mui/material/IconButton';
 import FavorteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -14,11 +14,85 @@ import {getUser} from "../features/auth/authSlice";
 import {toast} from 'react-toastify';
 import EditIcon from '@mui/icons-material/Edit';
 import axios from 'axios';
+import ChipsArray from './helperComponents/Tags.js';
 export const SongInfo = (props) => {
     const dispatch = useDispatch();
     const [username, setUsername] = useState("");
     const {isSuccess, isError, message} = useSelector(state => state.songs);
+    const [isEdit, setIsEdit] = useState(false);
     const {user} = useSelector(state => state.auth);
+    const [title, setTitle] = useState(props.title);
+    const [description, setDescription] = useState(props.description);
+    const [tags, setTags] = useState(props.tags);
+    const [image, setImage] = useState();
+    const [startAtMinutes, setStartAtMinutes] = useState(0);
+    const [startAtSeconds, setStartAtSeconds] = useState(0);
+    const [endAtMinutes, setEndAtMinutes] = useState(0);
+    const [endAtSeconds, setEndAtSeconds] = useState(0);
+    const parseTimesFromLink = (link) => {
+        let startAt = 0;
+        let endAt = 0;
+        if(link.includes("start") && link.includes("end")){
+            startAt = link.split("start=")[1].split("&")[0];
+            endAt = link.split("end=")[1].split("&")[0];
+        } else if(link.includes("start")){
+            startAt = link.split("start=")[1].split("&")[0];
+        } else if(link.includes("end")){
+            endAt = link.split("end=")[1].split("&")[0];
+        }
+        startAt = parseInt(startAt);
+        endAt = parseInt(endAt);
+        let startAtMinutes = Math.floor(startAt/60);
+        let startAtSeconds = startAt-startAtMinutes*60;
+        let endAtMinutes = Math.floor(endAt/60);
+        let endAtSeconds = endAt-endAtMinutes*60;
+        setStartAtMinutes(startAtMinutes);
+        setStartAtSeconds(startAtSeconds);
+        setEndAtMinutes(endAtMinutes);
+        setEndAtSeconds(endAtSeconds);
+    }
+    const checkYoutube = (url) => {
+        if(url.includes("youtube") || url.includes("youtu.be")){
+            return true;
+        }
+        return false;
+    }
+    const retrieveID = (url) => {
+        var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        var match = url.match(regExp);
+        return match && match[2].length === 11 ? match[2] : null;
+    }
+    const generateLink = (url) => {
+        if(checkYoutube(url)){
+            let id = retrieveID(url);
+            if(!id){
+                toast.error("Invalid Youtube Link");
+                return "";
+            }
+            let startAt = parseInt(startAtMinutes)*60 + parseInt(startAtSeconds);
+            let endAt = parseInt(endAtMinutes)*60 + parseInt(endAtSeconds);
+            console.log(startAt, endAt);
+            return (`https://www.youtube.com/embed/${id}?start=${startAt}&end=${endAt}`);
+        } else {
+            toast.error("This is not a youtube link");
+        }
+    }
+    const generateLinkFromTime = (url) => {
+        // Use the url to get the video id, then generate the link using watch
+        let id = url;
+        if (id.includes("?")){
+            id = id.split("?")[0];
+        }
+        if(id.includes("/")){
+            id = id.split("/")[id.split("/").length-1];
+        }
+        return (`https://www.youtube.com/watch?v=${id}`);
+    }
+
+    useEffect(() => {
+        parseTimesFromLink(props.image);
+        setImage(generateLinkFromTime(props.image));
+    }, [props.image]);
     useEffect(() => {
         if(isError){
             toast.error(message);
@@ -48,14 +122,50 @@ export const SongInfo = (props) => {
         };
         dispatch(modifyLikeSong(idObject));
     }
+    const checkIfSongExists = (title, currentVideo) => {
+        // Send axios request to check if song exists in database send title and video link
+        // If song exists, return true
+        // If song does not exist, return false
+        axios.get('/api/checkSong/' + title + '/' + currentVideo).then(res => {
+            if(res.data.length > 0){
+                return true;
+            }
+            return false;
+        })
+    }
+    const changeOldSong = () => {
+        console.log("change old song");
+        let currentVideo = image;
+        if(!title || !description || !currentVideo){
+            toast.error("Please fill out all fields");
+            return;
+        }
+        currentVideo = generateLink(currentVideo);
+
+        if(checkIfSongExists(title, currentVideo)){
+            toast.error("Song name or timestamps already exists");
+            return;
+        }
+        let newSong = {
+            ...props.song,
+            text: title,
+            description: description,
+            link: currentVideo,
+            tags: tags,
+        }
+        dispatch(changeSong(newSong));
+        setIsEdit(false); setTitle(""); setDescription(""); setImage(""); setStartAtMinutes(0); setStartAtSeconds(0); setEndAtMinutes(0); setEndAtSeconds(0); 
+    }
     return(
         <div style={{margin: 10}}>
         <Card>
             <CardContent>
+            { !isEdit ?
+                <div>
                 <Typography gutterBottom variant="h5" component="h2">
                     {props.title}
                     { user && props.song.user === user.user.id &&
-                        <IconButton aria-label="edit song" onClick={() => console.log("Edited click!")} >
+                        <IconButton aria-label="edit song" onClick={() => setIsEdit(true)} >
                             <EditIcon />
                         </IconButton>
                     }
@@ -116,51 +226,95 @@ export const SongInfo = (props) => {
                     Creator: {username ? username : "Loading..."}
                 </Typography>
                 </div>
+                </div>
+                :
+                <div>
+                     <div>
+                    <TextField
+                    id="title"
+                    label="Title"
+                    type="text"
+                    onChange={(e) => setTitle(e.target.value)}
+                    defaultValue={props.title}
+                    value={title}
+                    />
+                    <IconButton aria-label="edit song" onClick={() => {
+                        setIsEdit(false);
+                    }}>
+                        <RemoveIcon />
+                    </IconButton>
+                    </div>
+                    <div style={{marginTop: 5}}>
+                    <TextField
+                    id="description"
+                    label="Description"
+                    type="text"
+                    onChange={(e) => setDescription(e.target.value)}
+                    defaultValue={props.description}
+                    value={description}
+                    />
+                    </div>
+                    <div style={{marginTop: 5}}>
+                    <TextField
+                    id="link"
+                    label="link"
+                    type="text"
+                    onChange={(e) => setImage(e.target.value)}
+                    defaultValue={props.image}
+                    value={image}
+                    />
+                    </div>
+                    <div style={{marginTop: 5}}>
+                    <TextField
+                    id="startAtMinutes"
+                    label="Start at Minutes"
+                    type="text"
+                    defaultValue={startAtMinutes}
+                    onChange={(e) => setStartAtMinutes(e.target.value)}
+                    value={startAtMinutes}
+                    />
+                    <TextField
+                    id="startAtSeconds"
+                    label="Start at Seconds"
+                    type="text"
+                    onChange={(e) => setStartAtSeconds(e.target.value)}
+                    value={startAtSeconds}
+                    defaultValue={startAtSeconds}
+                    />
+                    </div>
+                    <div style={{marginTop: 5}}>
+                    <TextField
+                    id="endAtMinutes"
+                    label="End at Minutes"
+                    type="text"
+                    onChange={(e) => setEndAtMinutes(e.target.value)}
+                    value={endAtMinutes}
+                    defaultValue={endAtMinutes}
+                    />
+                    <TextField
+                    id="endAtSeconds"
+                    label="End at Seconds"
+                    type="text"
+                    onChange={(e) => setEndAtSeconds(e.target.value)}
+                    value={endAtSeconds}
+                    defaultValue={endAtSeconds}
+                    />
+                    </div>
+                    <div style={{marginTop: 5}}>
+                    <ChipsArray tags={props.song.tags} setTag={setTags} />
+                    </div>
+                    <div style={{marginTop: 5}}>
+                    <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => changeOldSong()}>
+                        Save
+                    </Button>
+                    </div>
+                </div>
+            }
             </CardContent>
         </Card>
         </div>
     );
 }
-// export default class SongInfo extends React.Component{
-//     handleClick = () => {
-//         console.log("Clicked!")
-//     }
-//     render(){
-//         console.log(this.props.image);
-
-//         return(
-//             <div style={{margin: 10}}>
-//             <Card>
-//                 <CardContent>
-//                     <Typography gutterBottom variant="h5" component="h2">
-//                         {this.props.title}
-//                     </Typography>
-//                     <Typography variant="body2" color="textSecondary" component="p">
-//                         {this.props.song.description}
-//                     </Typography>
-//                     <div>
-//                     <CardMedia component="iframe" image={this.props.image} height="140" allow="fullscreen" />
-//                     {
-//                         !this.props.created && 
-//                         !this.props.userSongs.includes(this.props.song) ? 
-//                         <IconButton aria-label="add to favorites" onClick={() => this.props.addUserSong(this.props.song)} >
-//                             <FavorteBorderIcon />
-//                         </IconButton>
-//                         :
-//                         <IconButton aria-label="remove from favourites" onClick={() => this.props.removeUserSong(this.props.song)} >
-//                             <FavoriteIcon />
-//                         </IconButton>
-//                     } 
-//                     <IconButton aria-label="remove" onClick={() => dispatch(deleteSong(this.props.song.id))}>
-//                         <RemoveIcon />
-//                      </IconButton>
-//                     <Button variant="contained" color="primary" onClick={() => console.log("Clicked!")}>
-//                         Publish
-//                     </Button>
-//                     </div>
-//                 </CardContent>
-//             </Card>
-//             </div>
-//         );
-//     }
-// }
