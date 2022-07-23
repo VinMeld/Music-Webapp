@@ -17,6 +17,7 @@
 .DS_Store
 /frontend/.env
 backend/.env
+/backend/.env
 /backend/.env.development.local
 /backend/.env.test.local
 /backend/.env.production.local

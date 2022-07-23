@@ -1,10 +1,16 @@
+# How to run 
+Run "npm i" in both the front end and back end. 
+I haven't sent up concurrency yet, so you'll have to run the back end and front end seperately.
+to run, do "npm start"
+A .env is required for the backend, DM me for the values.
+
 # TODO
 - [x] Complete favourite songs stuff
 - [x] Add delete
-- [ ] Allow for edit songs
+- [x] Allow for edit songs
 - [x] Add a publish button
 - [x] Fix login switch
-- [ ] Fix search for songs
+- [x] Fix search for songs
 - [x] Add hashtags
 - [x] Add sort by hashtags
 - [x] Allow for likes 
@@ -15,9 +21,9 @@
 - [x] Push to GitHub
 - [x] Add in created by in usergrid
 - [ ] Fix the user bug when you go in icognito 
-    Refactor everything
-  - [ ] Rename files, create new components and different folders
-- [ ] Combine searches (tags & search/sort)
+- [ ] Rename files, create new components and different folders
+- [ ] Fix issue of checking for already made songs
+- [x] Combine queries (tags & sort)
 
 ## Later
 - [ ] Fix UI (Will need to expand on this)

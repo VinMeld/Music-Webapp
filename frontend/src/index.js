@@ -6,10 +6,10 @@ import { Provider } from 'react-redux';
 import { store } from './app/store';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { CreateUser } from './components/CreateUser';
+import { CreateUser } from './components/Register';
 import { Login } from './components/Login';
-import {UserGrid} from './components/UserGrid';
-import {CommunityGrid} from './components/CommunityGrid';
+import {FavouriteSongs} from './components/FavouriteSongs';
+import {PublicSongs} from './components/PublicSongs';
 import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from './components/Navbar';
@@ -26,11 +26,11 @@ root.render(
             <Route path="/login" element={<Login />} />
             <Route path="/createuser" element={<CreateUser />} />
             <Route path="/favouritesongs" element={
-                <UserGrid />
+                <FavouriteSongs />
             } />
 
             
-            <Route path="/songs" element={<CommunityGrid />} />
+            <Route path="/songs" element={<PublicSongs />} />
           </Route>
         </Routes>
      </BrowserRouter>

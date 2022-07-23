@@ -36,38 +36,37 @@ export const CreateUser = () => {
         return <CircularProgress />;
     }
     const registerUserAndCheckFields = () => {
-        if(email.length === 0){
-            toast.error( "Email is required");
-            return ;
+        switch(true){
+            case email === "":
+                toast.error("Email is required");
+                return;
+            case password === "":
+                toast.error("Password is required");
+                return;
+            case confirmPassword === "":
+                toast.error("Confirm password is required");
+                return;
+            case username === "":
+                toast.error("Username is required");
+                return;
+            case password !== confirmPassword:
+                toast.error("Passwords do not match");
+                return;
+            case password.length < 4:
+                toast.error("Password must be at least 4 characters");
+                return;
+            case !email.includes("@"):
+                toast.error("Eamil must be a valid email");
+                return;
+            case !username.match(/^[a-zA-Z0-9]+$/):
+                toast.error("Username must be alphanumeric");
+                return;
+            case !email.includes('.'):
+                toast.error("Give a real email");
+                return;
+            default:
+                dispatch(register({email, password, name:username}));
         }
-        if(!email.includes("@")){
-            toast.error( "Give a real email!");
-            return ;
-        }
-        if(!email.includes(".")){
-            toast.error( "Give a real email!");
-            return ;
-        }
-        if(password.length === 0){
-            toast.error( "Password is required");
-            return ;
-        }
-        if(password.length < 4){
-            toast.error( "Password must be at least 4 characters");
-            return ;
-        }
-        if(confirmPassword !== password){
-            toast.error( "Passwords must match");
-            return ;
-        }
-        if(username.length === 0){
-            toast.error( "Username is required");
-            return ;
-        }
-        const userData= {
-            name:username, email, password
-        }
-        dispatch(register(userData));
     }
     return(
         <div>

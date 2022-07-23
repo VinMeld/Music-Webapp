@@ -88,11 +88,12 @@ export const SongInfo = (props) => {
         }
         return (`https://www.youtube.com/watch?v=${id}`);
     }
-
+    // Sets the link properly when it's changed
     useEffect(() => {
         parseTimesFromLink(props.image);
         setImage(generateLinkFromTime(props.image));
     }, [props.image]);
+    // To make sure the request to get the user went alright.
     useEffect(() => {
         if(isError){
             toast.error(message);
@@ -126,7 +127,7 @@ export const SongInfo = (props) => {
         // Send axios request to check if song exists in database send title and video link
         // If song exists, return true
         // If song does not exist, return false
-        axios.get('/api/checkSong/' + title + '/' + currentVideo).then(res => {
+        axios.get('/api/songs/checkSong/' + title + '/' + currentVideo).then(res => {
             if(res.data.length > 0){
                 return true;
             }
@@ -146,9 +147,11 @@ export const SongInfo = (props) => {
             toast.error("Song name or timestamps already exists");
             return;
         }
+        console.log("TAGS:")
+        console.log(tags);
         let newSong = {
             ...props.song,
-            text: title,
+            title: title,
             description: description,
             link: currentVideo,
             tags: tags,
@@ -162,6 +165,7 @@ export const SongInfo = (props) => {
             <CardContent>
             { !isEdit ?
                 <div>
+                {/* If the song is not being edited, show the song info */}
                 <Typography gutterBottom variant="h5" component="h2">
                     {props.title}
                     { user && props.song.user === user.user.id &&
@@ -229,6 +233,7 @@ export const SongInfo = (props) => {
                 </div>
                 :
                 <div>
+                    {/* Edit song form */}
                      <div>
                     <TextField
                     id="title"
@@ -301,7 +306,7 @@ export const SongInfo = (props) => {
                     />
                     </div>
                     <div style={{marginTop: 5}}>
-                    <ChipsArray tags={props.song.tags} setTag={setTags} />
+                    <ChipsArray tags={props.song.tags} setTags={setTags} />
                     </div>
                     <div style={{marginTop: 5}}>
                     <Button

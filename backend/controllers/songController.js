@@ -20,7 +20,7 @@ const getSongs = asyncHandler(async (req, res) => {
         } else if(query === "recent"){
             songs.sort((a, b) => b.createdAt - a.createdAt);
         } else if(query === "alphabetical"){
-            songs.sort((a, b) => a.text.localeCompare(b.text));
+            songs.sort((a, b) => a.title.localeCompare(b.title));
         } else if(query === "random") {
             songs.sort((a, b) => 0.5 - Math.random());
         }else if(query === "comments"){
@@ -28,7 +28,7 @@ const getSongs = asyncHandler(async (req, res) => {
         } else if(query === 'search') {
             console.log(req.body)
             let searchItem = req.body.package;
-            songs = songs.filter(song => song.text.toLowerCase().includes(searchItem.toLowerCase()));
+            songs = songs.filter(song => song.title.toLowerCase().includes(searchItem.toLowerCase()));
         } else if(query === 'tags') {
             if(!req.params.package){
                 return res.status(200).json(songs);
@@ -56,12 +56,12 @@ const getSongs = asyncHandler(async (req, res) => {
 //@route POST /api/songs
 //@access Private
 const setSong = asyncHandler (async (req, res) => {
-    if(!req.body.text){
+    if(!req.body.title){
         res.status(400);
-        throw new Error('No song text provided');
+        throw new Error('No song title provided');
     }
     const song = await Song.create({
-        text:req.body.text,
+        title:req.body.title,
         description: req.body.description,
         likes: 0,
         comments: [],
@@ -76,6 +76,7 @@ const setSong = asyncHandler (async (req, res) => {
 //@access Private
 const changeSong = asyncHandler (async (req, res) => {
     console.log("in changeSong");
+    console.log(req.body);
     const song = await Song.findById(req.params.id);
     if(!song){
         res.status(404);
@@ -124,8 +125,6 @@ const deleteSong = asyncHandler (async (req, res) => {
 //@access Public
 const getPublicSongs = asyncHandler (async (req, res) => {
     let songs = await Song.find({isPrivate: false});
-    console.log("hitting getPublicSongs");
-    console.log(req.params.query);
     if(req.params.query){
         const query = req.params.query.toLowerCase();
         console.log(query)
@@ -134,7 +133,7 @@ const getPublicSongs = asyncHandler (async (req, res) => {
         } else if(query === "recent"){
             songs.sort((a, b) => b.createdAt - a.createdAt);
         } else if(query === "alphabetical"){
-            songs.sort((a, b) => a.text.localeCompare(b.text));
+            songs.sort((a, b) => a.title.localeCompare(b.title));
         } else if(query === "random") {
             songs.sort((a, b) => 0.5 - Math.random());
         } else if(query === "comments"){
@@ -142,7 +141,7 @@ const getPublicSongs = asyncHandler (async (req, res) => {
         } else if(query === 'search') {
             console.log(req.body)
             let searchItem = req.body.package;
-            songs = songs.filter(song => song.text.toLowerCase().includes(searchItem.toLowerCase()));
+            songs = songs.filter(song => song.title.toLowerCase().includes(searchItem.toLowerCase()));
         } else if(query === 'tags') {
             if(!req.params.package){
                 return res.status(200).json(songs);
@@ -165,6 +164,24 @@ const getPublicSongs = asyncHandler (async (req, res) => {
     }
     res.status(200).json(songs);
 })
+//@desc Check if song already exists
+//@route GET /api/songs/checkSong/:title/:link
+//@access Public
+const checkSong = asyncHandler (async (req, res) => {
+    console.log("in check song!")
+    let song = await Song.findOne({title: req.params.title});
+    if(song){
+        res.status(404);
+        throw new Error('Song already exists');
+    }
+    song = await Song.findOne({link: req.params.link});
+    if(song){
+        res.status(404);
+        throw new Error('Song already exists');
+    }
+    res.status(200).json({});
+})
+
 //@desc Get Public Songs Songs
 //@route POST /api/songs/like/:id/:userId
 //@access Public
@@ -193,6 +210,82 @@ const likeSong = asyncHandler (async (req, res) => {
     });
     res.status(200).json(updatedSong);
 })
+//@desc Get songs and sort it based on query
+//@route POST /api/sortCurrentSongs/:query
+//@access Public
+const sortCurrentSongs = asyncHandler (async (req, res) => {
+    // get the current songs and see if they aren't null
+    let songs = req.body.songs;
+    if(!songs){
+        res.status(404);
+        throw new Error('Songs not found');
+    }
+    // sort the songs based on the query
+    if(req.params.query === "popularity"){
+        songs.sort((a, b) => b.likes - a.likes);
+    }
+    if(req.params.query === "recent"){
+        songs.sort((a, b) => b.createdAt - a.createdAt);
+    }
+    if(req.params.query === "alphabetical"){
+        songs.sort((a, b) => a.title.localeCompare(b.title));
+    }
+    return res.status(200).json(songs);
+})
+//@desc Use current songs to filter by tags
+//@route POST /api/filterCurrentSongs/:tags
+//@access Public
+const filterCurrentSongs = asyncHandler (async (req, res) => {
+    // get the current songs and see if they aren't null
+    console.log('in filter current songs');
+    let songs = req.body.songs;
+    console.log(songs);
+    if(!songs){
+        res.status(404);
+        throw new Error('Songs not found');
+    }
+    if(!req.params.tags){
+        return res.status(200).json(songs);
+    }
+    if(req.params.tags === "none"){
+        return res.status(200).json(songs);
+    }
+    // get the tags and see if they aren't null
+    let tags = req.params.tags.split(',');
+    if(!tags){
+        res.status(404);
+        throw new Error('Tags not found');
+    }
+    // remove any tags that are empty
+    tags = tags.filter(tag => tag !== '');
+    // See if the song has all of the tags if not remove it
+    songs = songs.filter(song => {
+        let songTags = song.tags.map(tag => tag.toLowerCase());
+        let songHasAllTags = true;
+        for(let i = 0; i < tags.length; i++){
+            if(!songTags.includes(tags[i].toLowerCase())){
+                songHasAllTags = false;
+            }
+        }
+        return songHasAllTags;
+    })
+    return res.status(200).json(songs);
+})
+//@desc Search for songs based on provided songs and query
+//@route POST /api/searchCurrentSongs/:query
+//@access Public
+const searchCurrentSongs = asyncHandler (async (req, res) => {
+    // get the current songs and see if they aren't null
+    let songs = req.body.songs;
+    if(!songs){
+        res.status(404);
+        throw new Error('Songs not found');
+    }
+    // search the songs based on the search query
+    let searchItem = req.params.query;
+    songs = songs.filter(song => song.title.toLowerCase().includes(searchItem.toLowerCase()));
+    return res.status(200).json(songs);
+})
 
 module.exports = {
     getSongs,
@@ -200,5 +293,9 @@ module.exports = {
     changeSong,
     deleteSong,
     getPublicSongs,
-    likeSong
+    likeSong,
+    checkSong,
+    sortCurrentSongs,
+    filterCurrentSongs,
+    searchCurrentSongs
 }

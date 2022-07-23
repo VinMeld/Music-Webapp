@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getPublicSongs, getSongs, changeSong, deleteSong, setSong, likeSong } = require('../controllers/songController');
+const { getPublicSongs, getSongs, changeSong, deleteSong, setSong, likeSong, checkSong, sortCurrentSongs, filterCurrentSongs, searchCurrentSongs } = require('../controllers/songController');
 const {protect} = require('../middleware/authMiddleware');
 router.route('/').get(protect, getSongs).post(protect, setSong);
 router.route('/:id').put(protect, changeSong).delete(protect, deleteSong);
@@ -10,4 +10,8 @@ router.route('/:query').get(protect, getSongs);
 router.route('/:query/:package').get(protect, getSongs);
 router.route('/getPublicSongs/:query/:package').get(getPublicSongs);
 router.route('/:id/:userId').put(likeSong);
+router.route('/checkSong/:title/:link').get(checkSong);
+router.route('/sortCurrentSongs/:query').post(sortCurrentSongs);
+router.route('/filterCurrentSongs/:tags').post(filterCurrentSongs);
+router.route('/searchCurrentSongs/:query').post(searchCurrentSongs);
 module.exports = router;

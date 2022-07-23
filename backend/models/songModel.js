@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
 const songSchema = mongoose.Schema({
-    text: {
+    title: {
         type: String,
-        required: [true, 'Song text is required'],
+        required: [true, 'Song title is required'],
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
