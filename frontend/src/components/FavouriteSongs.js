@@ -78,12 +78,20 @@ export const FavouriteSongs = () => {
         }
         currentVideo = setYoutubeUrl(currentVideo, startAtMinutes, startAtSeconds, endAtMinutes, endAtSeconds);
         if(checkIfSongExists(title, "test")){
-            toast.error("Song name or timestamps already exists");
+            toast.error("Song name");
             return;
         }
-        console.log("tags" , tags);
-        dispatch(createSong({title:title, description, link:currentVideo, user, tags}));
-        setCreateNewSong(false); 
+        axios.get('/api/songs/checkSong/' + title).then(res => {
+            if(res.data.message === 'true') {
+                toast.error("Song already exists");
+                return;
+            }
+            dispatch(createSong({title:title, description, link:currentVideo, user, tags}));
+            setCreateNewSong(false);
+            toast.success("Song added successfully");
+        }).catch(err => {
+            toast.error("Server Problem");
+        });       
     }
     // This searches the songs for the song based on title. 
     const searchForSong = (e) => {

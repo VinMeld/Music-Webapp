@@ -10,7 +10,6 @@ const ListItem = styled('li')(({ theme }) => ({
 
 export default function ChipsArray(props) {
   let defaultValue = []
-  console.log(props.tags)
   if(props.tags){
     // I need to add keys, and change the props.tags to labels and use the index as key
     defaultValue = props.tags.map((tag, index) => {
@@ -24,15 +23,16 @@ export default function ChipsArray(props) {
 }
   const [chipData, setChipData] = React.useState(defaultValue);
   const [newTag, setNewTag] = React.useState('');
-
+  React.useEffect(() => {
+    props.setTags(chipData.map((chip) => chip.label));
+  }, [chipData]);
   const handleDelete = (chipToDelete) => () => {
     setChipData((chips) => chips.filter((chip) => chip.key !== chipToDelete.key));
-    props.setTags(chipData.map((chip) => chip.label));
-
   };
   const createNewTag = () => {
     setChipData((chips) => [...chips, { key: chips.length, label: newTag }]);
     props.setTags(chipData.map((chip) => chip.label));
+    console.log(props.tags);
     setNewTag('');
   }
   return (

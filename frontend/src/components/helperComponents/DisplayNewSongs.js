@@ -99,6 +99,7 @@ const DisplayNewSongs = (props) => {
                     variant="contained" 
                     color="primary"
                     onClick={ () => {
+                        console.log(tags);
                         if(checkYoutube(video)){
                         props.addSong(title, description, video, tags, startAtMinutes, startAtSeconds, endAtMinutes, endAtSeconds);
                         setTitle("");
@@ -109,7 +110,7 @@ const DisplayNewSongs = (props) => {
                         setStartAtSeconds(0);
                         setEndAtMinutes(0);
                         setEndAtSeconds(0);
-                        toast.success("Song added successfully")
+                        
                         } else{
                             toast.error("Please enter a valid youtube link");
                         }

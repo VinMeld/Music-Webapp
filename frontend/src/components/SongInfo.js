@@ -123,17 +123,6 @@ export const SongInfo = (props) => {
         };
         dispatch(modifyLikeSong(idObject));
     }
-    const checkIfSongExists = (title, currentVideo) => {
-        // Send axios request to check if song exists in database send title and video link
-        // If song exists, return true
-        // If song does not exist, return false
-        axios.get('/api/songs/checkSong/' + title + '/' + currentVideo).then(res => {
-            if(res.data.length > 0){
-                return true;
-            }
-            return false;
-        })
-    }
     const changeOldSong = () => {
         console.log("change old song");
         let currentVideo = image;
@@ -142,22 +131,23 @@ export const SongInfo = (props) => {
             return;
         }
         currentVideo = generateLink(currentVideo);
-
-        if(checkIfSongExists(title, currentVideo)){
-            toast.error("Song name or timestamps already exists");
-            return;
-        }
-        console.log("TAGS:")
-        console.log(tags);
-        let newSong = {
-            ...props.song,
-            title: title,
-            description: description,
-            link: currentVideo,
-            tags: tags,
-        }
-        dispatch(changeSong(newSong));
-        setIsEdit(false); setTitle(""); setDescription(""); setImage(""); setStartAtMinutes(0); setStartAtSeconds(0); setEndAtMinutes(0); setEndAtSeconds(0); 
+        // Send the request to the server and then update the song
+        axios.get('/api/songs/checkSong/' + title).then(res => {
+            console.log(res.data);
+            if(res.data.message === 'true'){
+                toast.error("Song already exists");
+                return;
+            }
+            let newSong = {
+                ...props.song,
+                title: title,
+                description: description,
+                link: currentVideo,
+                tags: tags,
+            }
+            dispatch(changeSong(newSong));
+            setIsEdit(false); setTitle(""); setDescription(""); setImage(""); setStartAtMinutes(0); setStartAtSeconds(0); setEndAtMinutes(0); setEndAtSeconds(0); 
+        })
     }
     return(
         <div style={{margin: 10}}>

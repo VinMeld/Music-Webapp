@@ -16,12 +16,12 @@ To run, do "npm start" in front and "npm run server" in back. A .env is required
 - [x] Fix youtube links
 - [x] Put in set start/end time when adding song
 - [x] Check for proper email/username
-- [ ] Add proper documentation and comments :(
+- [x] Add proper documentation and comments :(
 - [x] Push to GitHub
 - [x] Add in created by in usergrid
 - [ ] Fix the user bug when you go in icognito 
-- [ ] Rename files, create new components and different folders
-- [ ] Fix issue of checking for already made songs
+- [x] Rename files, create new components and different folders
+- [x] Fix issue of checking for already made songs
 - [x] Combine queries (tags & sort)
 
 ## Later

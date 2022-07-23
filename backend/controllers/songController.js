@@ -165,21 +165,19 @@ const getPublicSongs = asyncHandler (async (req, res) => {
     res.status(200).json(songs);
 })
 //@desc Check if song already exists
-//@route GET /api/songs/checkSong/:title/:link
+//@route GET /api/songs/checkSong/:title/
 //@access Public
 const checkSong = asyncHandler (async (req, res) => {
     console.log("in check song!")
-    let song = await Song.findOne({title: req.params.title});
-    if(song){
-        res.status(404);
-        throw new Error('Song already exists');
+    if(!req.params.title){
+        res.status(400);
+        throw new Error('No song title provided');
     }
-    song = await Song.findOne({link: req.params.link});
+    let song = await Song.findOne({title: req.params.title.toLowerCase()});
     if(song){
-        res.status(404);
-        throw new Error('Song already exists');
+        res.status(200).json({message: 'true'});
     }
-    res.status(200).json({});
+    res.status(200).json({message: 'false'});
 })
 
 //@desc Get Public Songs Songs
