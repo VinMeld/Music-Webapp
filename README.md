@@ -1,8 +1,7 @@
 # How to run 
 Run "npm i" in both the front end and back end. 
 I haven't sent up concurrency yet, so you'll have to run the back end and front end seperately.
-to run, do "npm start"
-A .env is required for the backend, DM me for the values.
+To run, do "npm start" in front and "npm run server" in back. A .env is required for the backend, DM me for the values.
 
 # TODO
 - [x] Complete favourite songs stuff
