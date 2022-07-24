@@ -9,8 +9,9 @@ import {
   ListItemIcon
 } from "@mui/material";
 import {useNavigate} from "react-router-dom";
-import {useSelector } from 'react-redux';
+import {useSelector, useDispatch } from 'react-redux';
 import { Link } from "react-router-dom";
+import {logout, reset} from '../features/auth/authSlice';
 import MenuIcon from "@mui/icons-material/Menu";
 import logo from "../images/logo.png";
 
@@ -18,6 +19,7 @@ function DrawerComponent() {
   const [openDrawer, setOpenDrawer] = useState(false);
   const {user} = useSelector(state => state.auth);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   return (
     <>
       <Drawer
@@ -73,6 +75,22 @@ function DrawerComponent() {
             </ListItemText>
           </ListItem>
           </div>
+          }
+          {user &&
+          <ListItem onClick={() => {
+            console.log("Logout!");
+            dispatch(logout());
+            dispatch(reset());
+            navigate("/");
+          }
+          }>
+
+            <ListItemText>
+              <Button variant="contained" color="primary" style={{marginTop: 10}}>
+                Logout
+              </Button>
+            </ListItemText>
+          </ListItem>
           }
         </List>
       </Drawer>
