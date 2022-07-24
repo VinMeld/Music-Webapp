@@ -1,7 +1,6 @@
 {
   "name": "music",
   "version": "0.1.0",
-  "proxy": "http://localhost:5000/",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.9.3",
@@ -13,6 +12,7 @@
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^0.27.2",
+    "http-proxy-middleware": "^2.0.6",
     "path": "^0.12.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -25,6 +25,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "server": "cd ~/MusicApp/backend && npm run server",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

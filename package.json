@@ -1,0 +1,25 @@
+{
+  "name": "musicapp",
+  "version": "1.0.0",
+  "description": "Run \"npm i\" in both the front end and back end.  I haven't sent up concurrency yet, so you'll have to run the back end and front end seperately. To run, do \"npm start\" in front and \"npm run server\" in back. A .env is required for the backend, DM me for the values.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "cd backend && npm run server",
+    "client": "cd frontend && npm start",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VinMeld/MusicApp.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/VinMeld/MusicApp/issues"
+  },
+  "homepage": "https://github.com/VinMeld/MusicApp#readme",
+  "dependencies": {
+    "concurrently": "^7.3.0"
+  }
+}
