@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useMemo} from 'react';
 import {SongInfo} from './SongInfo';
 import {style} from './style';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import {IconButton, CircularProgress, CardContent, Box, Grid} from '@mui/material';
+import {IconButton, CircularProgress, Grid} from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -10,7 +10,7 @@ import { useEffect } from 'react';
 import {createSong} from '../features/songs/songSlice';
 import {getSongs, reset, setSongs} from '../features/songs/songSlice';
 import axios from 'axios';
-import displayFilters from './helperComponents/displayFilters';
+import {DisplayFilters} from './helperComponents/DisplayFilters';
 import DisplayNewSongs from './helperComponents/DisplayNewSongs';
 import {generateTagsList} from './helperFunction/generateTagsList';
 export const FavouriteSongs = () => {
@@ -37,14 +37,12 @@ export const FavouriteSongs = () => {
             toast.error(message);
         }
         dispatch(getSongs(null));
-        
+
         return () => {
             dispatch(reset());
         }
-    }, [user, navigate, isError, message, dispatch]);
-    if(isLoading) {
-        return <CircularProgress />;
-    }
+    }, [user ,dispatch, isError, message]);
+  
     // Making sure that it's a youtube url
     const retrieveID = (url) => {
         var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -129,7 +127,7 @@ export const FavouriteSongs = () => {
             <div style={style.header}>
                 <h1>Welcome {user && user.user.name}!</h1>
                 <h2>Your songs!</h2>
-                {displayFilters({sortByQuery, searchForSong, selectedTags, setSelectedTags, tagsList})}
+                <DisplayFilters selectedTags={selectedTags} sortByQuery={sortByQuery} setSelectedTags={setSelectedTags} tagsList={tagsList} searchForSong={searchForSong}/>
             </div>
             <div style={style.box}>
                 <Grid container spacing={3}>

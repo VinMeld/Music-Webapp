@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
@@ -18,7 +18,6 @@ import ChipsArray from './helperComponents/Tags.js';
 export const SongInfo = (props) => {
     const dispatch = useDispatch();
     const [username, setUsername] = useState("");
-    const {isSuccess, isError, message} = useSelector(state => state.songs);
     const [isEdit, setIsEdit] = useState(false);
     const {user} = useSelector(state => state.auth);
     const [title, setTitle] = useState(props.title);
@@ -51,6 +50,15 @@ export const SongInfo = (props) => {
         setEndAtMinutes(endAtMinutes);
         setEndAtSeconds(endAtSeconds);
     }
+    const renderCreator = useMemo(() => {
+        return (
+        <div>
+                <Typography variant="body2" color="textSecondary" component="p">
+                    Creator: {username ? username : "Loading..."}
+                </Typography>
+                </div>
+        );
+    }, [username]);
     const checkYoutube = (url) => {
         if(url.includes("youtube") || url.includes("youtu.be")){
             return true;
@@ -93,12 +101,7 @@ export const SongInfo = (props) => {
         parseTimesFromLink(props.image);
         setImage(generateLinkFromTime(props.image));
     }, [props.image]);
-    // To make sure the request to get the user went alright.
-    useEffect(() => {
-        if(isError){
-            toast.error(message);
-        }
-    }, [isError, message]);
+    
     useEffect(() => {
         axios.get('/api/users/' + props.song.user).then(res => {
             setUsername(res.data);
@@ -215,11 +218,7 @@ export const SongInfo = (props) => {
                 </Button>
                 }
                 </div>
-                <div>
-                <Typography variant="body2" color="textSecondary" component="p">
-                    Creator: {username ? username : "Loading..."}
-                </Typography>
-                </div>
+               {renderCreator}
                 </div>
                 :
                 <div>

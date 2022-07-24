@@ -1,7 +1,8 @@
-import React from 'react'
+import React, {useMemo} from 'react'
 import {Button, FormControl, InputLabel, OutlinedInput, MenuItem, Select} from '@mui/material';
 
-export default function displayFilters (props) {
+export const DisplayFilters = (props) => {
+    
   return (
     <div>
     <Button variant="contained" color="primary" onClick={() => props.sortByQuery("popularity")}>
@@ -47,6 +48,7 @@ export default function displayFilters (props) {
         </Select>
     </FormControl>
     </div>
+
   )
 }
 

@@ -6,7 +6,7 @@ import { getPublicSongs, reset, setSongs} from '../features/songs/songSlice';
 import {toast} from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
-import displayFilters from './helperComponents/displayFilters';
+import {DisplayFilters} from './helperComponents/DisplayFilters';
 import {generateTagsList} from './helperFunction/generateTagsList';
 export const PublicSongs = () => {
     const dispatch = useDispatch();
@@ -29,9 +29,9 @@ export const PublicSongs = () => {
             dispatch(reset());
         }
     }, [selectedTags, dispatch]);
-    if(isLoading) {
-        return <CircularProgress />;
-    } 
+    // if(isLoading) {
+    //     return <CircularProgress />;
+    // } 
     // This searches the songs for the song based on title. 
     const searchForSong = (e) => {
         let searchTerm = e.target.value.trim();
@@ -66,7 +66,7 @@ export const PublicSongs = () => {
         <div style={style.main}>
             <div style={style.header}>
                 <h1>Community Grid</h1>
-                {displayFilters({sortByQuery, searchForSong, selectedTags, setSelectedTags, tagsList})} 
+                <DisplayFilters selectedTags={selectedTags} sortByQuery={sortByQuery} setSelectedTags={setSelectedTags} tagsList={tagsList} searchForSong={searchForSong} />
             </div>
             <div style={style.box}>
                 <Grid container spacing={3}>
