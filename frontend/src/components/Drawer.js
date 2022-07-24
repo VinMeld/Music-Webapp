@@ -5,16 +5,19 @@ import {
   List,
   ListItem,
   ListItemText,
-  Button
+  Button,
+  ListItemIcon
 } from "@mui/material";
+import {useNavigate} from "react-router-dom";
 import {useSelector } from 'react-redux';
 import { Link } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
-
+import logo from "../images/logo.png";
 
 function DrawerComponent() {
   const [openDrawer, setOpenDrawer] = useState(false);
   const {user} = useSelector(state => state.auth);
+  const navigate = useNavigate();
   return (
     <>
       <Drawer
@@ -23,6 +26,7 @@ function DrawerComponent() {
       >
         <List>
          <ListItem onClick={() => setOpenDrawer(false)}>
+
             <ListItemText>
               <Link to="/">
               <Button>

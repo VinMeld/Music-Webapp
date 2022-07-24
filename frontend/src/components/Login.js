@@ -33,7 +33,7 @@ export const Login = () => {
         return <CircularProgress />;
     }
     return(
-        <div>
+        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
             <h1>Login</h1>
             <FormControl>
                 <InputLabel htmlFor="email">Email</InputLabel>

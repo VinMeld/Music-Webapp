@@ -30,6 +30,7 @@ const registerStuff = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'flex-end',
+  marginLeft: 10,
 }
 // mainLinks in the center
 const mainLinks ={
@@ -60,7 +61,10 @@ const mainLinks ={
           ) : (
             
             <div style={navbar}>
-            <img src={logo} style={{width: "3%", height: "3%", margin: 10}}alt="music" />
+
+            <img onClick={() => {
+              navigate("/");
+            }} src={logo} style={{width: "3%", height: "3%", margin: 10}}alt="music" />
             <div style={mainLinks}>
               <Link to="/">
               <Button>Home</Button>
@@ -75,7 +79,7 @@ const mainLinks ={
                 <Button>Songs</Button>
               </Link>
              
-              <FormControlLabel 
+             {/* <FormControlLabel 
               label= {theme.palette.mode === "dark" ? "Dark mode" : "Light mode"}
               control={   
                 <IconButton onClick={() => changeTheme()}>
@@ -83,7 +87,7 @@ const mainLinks ={
                 </IconButton>
               }
               labelPlacement="start"
-            />
+            />*/}
             </div>
             <div style={registerStuff}>
             {user ? (
@@ -100,10 +104,10 @@ const mainLinks ={
 
             ) : (<div>
               <Link to="/login" >
-                <Button>Login</Button>
+                <Button variant="contained">Login</Button>
               </Link>
               <Link to="/createuser" >
-                <Button>Create User</Button>
+                <Button variant="contained" style={{marginLeft: 10}}>Register</Button>
               </Link>
               </div>
               )

@@ -69,7 +69,7 @@ export const CreateUser = () => {
         }
     }
     return(
-        <div>
+        <div style={{display: 'flex', alignItems: 'center', flexDirection: 'column'}}>
             <h1>Register</h1>
             <FormControl>
                 <InputLabel htmlFor="email">Email</InputLabel>
@@ -133,7 +133,7 @@ export const CreateUser = () => {
                 }}
                 />
             </FormControl>
-            <Button variant="contained" color="primary" onClick={() => {
+            <Button style={{marginTop: 10}} variant="contained" color="primary" onClick={() => {
                 if (password === confirmPassword){
                     registerUserAndCheckFields(email, password, username);
 
