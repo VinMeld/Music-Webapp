@@ -1,19 +1,23 @@
 import React, {useMemo} from 'react'
-import {Button, FormControl, InputLabel, OutlinedInput, MenuItem, Select} from '@mui/material';
+import {Button, FormControl, InputLabel, OutlinedInput, MenuItem, Select, Typography} from '@mui/material';
 
 export const DisplayFilters = (props) => {
     
   return (
     <div>
-    <Button variant="contained" color="primary" onClick={() => props.sortByQuery("popularity")}>
-        Sort by popularity
+
+    <div style={{display: 'flex', justifyContent: 'space-between'}}>
+    <div style={{height: "30%"}}>
+    <Button variant="contained" color="primary" onClick={() => props.sortByQuery("popularity") } >
+        Popularity
     </Button>
-    <Button variant="contained" color="primary" onClick={() => props.sortByQuery("recent")}>
-        Sort by most recent
+    <Button style={{marginLeft: 5}} variant="contained" color="primary" onClick={() => props.sortByQuery("recent")}>
+        Recent
     </Button>
-    <Button variant="contained" color="primary" onClick={() => props.sortByQuery("alphabetical")}>
-        Sort by alphabetical
+    <Button style={{marginLeft: 5}} variant="contained" color="primary" onClick={() => props.sortByQuery("alphabetical")}>
+        Alphabetical
     </Button>
+    </div>
     <FormControl>
     <InputLabel htmlFor="search">Search for song</InputLabel>
         <OutlinedInput
@@ -24,7 +28,7 @@ export const DisplayFilters = (props) => {
         />
     </FormControl>
     <FormControl sx={{ m: 1, width: 300 }}>
-        <InputLabel id="demo-multiple-name-label">Name</InputLabel>
+        <InputLabel id="demo-multiple-name-label">Filter Tags</InputLabel>
         <Select
         labelId="demo-multiple-name-label"
         id="demo-multiple-name"
@@ -47,6 +51,7 @@ export const DisplayFilters = (props) => {
         ))}
         </Select>
     </FormControl>
+    </div>
     </div>
 
   )

@@ -15,6 +15,17 @@ const header = {
     gridRowStart: 1,
     gridRowEnd: 3,
 }
+const navbar = {
+    display: 'flex',
+    justifyContent: 'space-between',
+}
+const navLinks = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+}
+
+
 export const style = {
     box: box,
     main: main,

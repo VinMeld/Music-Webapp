@@ -154,7 +154,7 @@ export const SongInfo = (props) => {
     }
     return(
         <div style={{margin: 10}}>
-        <Card>
+        <Card >
             <CardContent>
             { !isEdit ?
                 <div>
@@ -190,8 +190,12 @@ export const SongInfo = (props) => {
                     </IconButton>
                     </div>
                     }
+                    
                     </div>
                 }
+                <Typography variant="body2" color="textSecondary" component="p">
+                    {props.song.likes} likes
+                     </Typography>
                 <div>
                     {
                         props.song.tags && props.song.tags.map(tag => {
@@ -199,9 +203,7 @@ export const SongInfo = (props) => {
                     })
                     }
                 </div>
-                <Typography variant="body2" color="textSecondary" component="p">
-                    {props.song.likes} likes
-                </Typography>
+               
                 { user &&  props.song.user === user.user.id &&
                     <IconButton aria-label="remove" onClick={() => {
                         dispatch(deleteSong(props.song._id))}} >

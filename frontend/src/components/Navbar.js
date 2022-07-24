@@ -8,14 +8,35 @@ import {
   useMediaQuery,
   FormControlLabel,
   Switch,
-  Button
+  Button,
+  IconButton
 } from "@mui/material";
 import { Outlet, Link, useLocation, useNavigate} from "react-router-dom";
 import DrawerComponent from "./Drawer";
 import {useSelector, useDispatch} from 'react-redux';
 import {logout, reset} from '../features/auth/authSlice';
-
+import logo from "../images/logo.png";	// import the logo
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 function Navbar() {
+  const navbar = {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: "100%",
+} 
+// registerStuff on the navbar to the right of the navbar
+const registerStuff = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'flex-end',
+}
+// mainLinks in the center
+const mainLinks ={
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+}
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const location = useLocation();
@@ -25,41 +46,49 @@ function Navbar() {
   if(location.pathname === "/"){
     return <Outlet />;
   }
+  const changeTheme = () => {
+    const newTheme = theme.palette.type === "light" ? "dark" : "light";
+    theme.palette.type = newTheme;
+    console.log(theme.palette.type);
+  }
   return (
     <div>
       <AppBar position="static">
-        <CssBaseline />
         <Toolbar>
-          <Typography variant="h4" >
-            Music!
-            
-          </Typography>
           {isMobile ? (
             <DrawerComponent />
           ) : (
-            <div>
-              <Link to="/" >
-                Home
+            
+            <div style={navbar}>
+            <img src={logo} style={{width: "3%", height: "3%", margin: 10}}alt="music" />
+            <div style={mainLinks}>
+              <Link to="/">
+              <Button>Home</Button>
               </Link>
               {user && 
               
-              <Link to="/favouritesongs" >
-                Favourite Songs
+              <Link to="/favouritesongs">
+                <Button>Favourite Songs</Button>
               </Link>
               }
-              <Link to="/songs" >
-                Songs
+              <Link to="/songs">
+                <Button>Songs</Button>
               </Link>
-              
-              <FormControlLabel
-              label= {user ? "loggedin" : "loggedout"}
-              control={<Switch color="primary" checked={user ? true : false} />}
+             
+              <FormControlLabel 
+              label= {theme.palette.mode === "dark" ? "Dark mode" : "Light mode"}
+              control={   
+                <IconButton onClick={() => changeTheme()}>
+                  {theme.palette.mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
+                </IconButton>
+              }
               labelPlacement="start"
-              disabled={true}
             />
+            </div>
+            <div style={registerStuff}>
             {user ? (
               <div>
-              <Button variant="contained" color="primary" onClick={()=>{
+              <Button variant="contained" color="primary" style={{marginLeft: 10}} onClick={()=>{
                 console.log("Logout!");
                 dispatch(logout());
                 dispatch(reset());
@@ -71,15 +100,16 @@ function Navbar() {
 
             ) : (<div>
               <Link to="/login" >
-                Login
+                <Button>Login</Button>
               </Link>
               <Link to="/createuser" >
-                Register
+                <Button>Create User</Button>
               </Link>
               </div>
               )
             }
 
+              </div>
             </div>
             
           )}

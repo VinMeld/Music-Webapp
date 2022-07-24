@@ -47,7 +47,9 @@ export default function ChipsArray(props) {
       }}
       component="ul"
     >
-      {chipData.map((data) => {
+    <div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'column'}}>
+      { 
+        chipData.map((data) => {
         return (
           <ListItem key={data.key}>
             <Chip
@@ -56,7 +58,9 @@ export default function ChipsArray(props) {
             />
           </ListItem>
         );
-      })}
+      })
+    }
+    </div>
       <div>
       <InputLabel htmlFor="tag">Tags</InputLabel>
         <OutlinedInput

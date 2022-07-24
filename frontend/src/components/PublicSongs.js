@@ -65,7 +65,7 @@ export const PublicSongs = () => {
         
         <div style={style.main}>
             <div style={style.header}>
-                <h1>Community Grid</h1>
+                <h1 style={{display: 'flex', alignItems: 'center', justifyContent:'center'}}>Public Songs!</h1>
                 <DisplayFilters selectedTags={selectedTags} sortByQuery={sortByQuery} setSelectedTags={setSelectedTags} tagsList={tagsList} searchForSong={searchForSong} />
             </div>
             <div style={style.box}>

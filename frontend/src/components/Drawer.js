@@ -5,6 +5,7 @@ import {
   List,
   ListItem,
   ListItemText,
+  Button
 } from "@mui/material";
 import {useSelector } from 'react-redux';
 import { Link } from "react-router-dom";
@@ -23,32 +24,48 @@ function DrawerComponent() {
         <List>
          <ListItem onClick={() => setOpenDrawer(false)}>
             <ListItemText>
-              <Link to="/">Home</Link>
+              <Link to="/">
+              <Button>
+              Home
+              </Button>
+              </Link>
             </ListItemText>
           </ListItem>
           {user && 
           
             <ListItem onClick={() => setOpenDrawer(false)}>
             <ListItemText>
-              <Link to="/favouritesongs">Favourite Songs</Link>
+              <Link to="/favouritesongs">
+              <Button> Favourite Songs </Button>
+              </Link>
             </ListItemText>
           </ListItem>
           }
           <ListItem onClick={() => setOpenDrawer(false)}>
             <ListItemText>
-              <Link to="/songs">Songs</Link>
+              <Link to="/songs">
+                <Button>Songs</Button>
+              </Link>
             </ListItemText>
           </ListItem>
           { !user &&
             <div>
           <ListItem onClick={() => setOpenDrawer(false)}>
             <ListItemText>
-              <Link to="/login">Log in</Link>
+              <Link to="/login">
+                <Button variant="contained" color="primary">
+                  Login
+                </Button>
+              </Link>
             </ListItemText>
           </ListItem>
           <ListItem onClick={() => setOpenDrawer(false)}>
             <ListItemText>
-              <Link to="/createuser">Register</Link>
+              <Link to="/createuser">
+                <Button variant="contained" color="primary" style={{marginTop: 10}}>
+                Register
+                </Button>
+              </Link>
             </ListItemText>
           </ListItem>
           </div>

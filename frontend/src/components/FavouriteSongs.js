@@ -125,9 +125,10 @@ export const FavouriteSongs = () => {
     return(
         <div style={style.main}>
             <div style={style.header}>
-                <h1>Welcome {user && user.user.name}!</h1>
-                <h2>Your songs!</h2>
-                <DisplayFilters selectedTags={selectedTags} sortByQuery={sortByQuery} setSelectedTags={setSelectedTags} tagsList={tagsList} searchForSong={searchForSong}/>
+                
+                    <h1 style={{display: 'flex', alignItems: 'center', justifyContent:'center'}}>Favourite Songs of {user && user.user.name}!</h1>
+                    <DisplayFilters selectedTags={selectedTags} sortByQuery={sortByQuery} setSelectedTags={setSelectedTags} tagsList={tagsList} searchForSong={searchForSong}/>
+                
             </div>
             <div style={style.box}>
                 <Grid container spacing={3}>
