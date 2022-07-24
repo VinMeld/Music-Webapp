@@ -137,7 +137,7 @@ export const SongInfo = (props) => {
         // Send the request to the server and then update the song
         axios.get('/api/songs/checkSong/' + title).then(res => {
             console.log(res.data);
-            if(res.data.message === 'true'){
+            if(res.data.message === 'true' && title !== props.title){
                 toast.error("Song already exists");
                 return;
             }
