@@ -28,6 +28,7 @@ export const SongInfo = (props) => {
     const [startAtSeconds, setStartAtSeconds] = useState(0);
     const [endAtMinutes, setEndAtMinutes] = useState(0);
     const [endAtSeconds, setEndAtSeconds] = useState(0);
+    const [id, setId] = useState(props.id);
     const parseTimesFromLink = (link) => {
         let startAt = 0;
         let endAt = 0;
@@ -50,6 +51,15 @@ export const SongInfo = (props) => {
         setEndAtMinutes(endAtMinutes);
         setEndAtSeconds(endAtSeconds);
     }
+    useEffect(() => {
+        if (user && user.id){
+            setId(user.id);
+            console.log("user id: " + user.id);
+        } else if (user && user.user.id){
+            setId(user.user.id);
+            console.log("user.user.id: " + user.user.id);
+        }
+    }, [user]);
     const renderCreator = useMemo(() => {
         return (
         <div>
@@ -115,14 +125,14 @@ export const SongInfo = (props) => {
         console.log(song)
         let idObject = {
             id: song._id,
-            userId: user.user.id
+            userId: id
         };
         dispatch(modifyLikeSong(idObject));
     }
     const handleRemoveFavourite = (song) => {
         let idObject = {
             id: song._id,
-            userId: user.user.id
+            userId: id
         };
         dispatch(modifyLikeSong(idObject));
     }
@@ -161,7 +171,7 @@ export const SongInfo = (props) => {
                 {/* If the song is not being edited, show the song info */}
                 <Typography gutterBottom variant="h5" component="h2">
                     {props.title}
-                    { user && props.song.user === user.user.id &&
+                    { user && props.song.user === id &&
                         <IconButton aria-label="edit song" onClick={() => setIsEdit(true)} >
                             <EditIcon />
                         </IconButton>
@@ -176,7 +186,7 @@ export const SongInfo = (props) => {
                     user &&
                     <div>
                     {
-                    !props.song.likedBy.includes(user.user.id) ? 
+                    !props.song.likedBy.includes(id) ? 
                     <div>
                     <IconButton aria-label="add to favorites" onClick={() => {
                         handleAddFavourite(props.song)}} >
@@ -204,13 +214,13 @@ export const SongInfo = (props) => {
                     }
                 </div>
                
-                { user &&  props.song.user === user.user.id &&
+                { user &&  props.song.user === id &&
                     <IconButton aria-label="remove" onClick={() => {
                         dispatch(deleteSong(props.song._id))}} >
                         <RemoveIcon />
                     </IconButton>
                 }
-                { user &&  props.song.user === user.user.id &&
+                { user &&  props.song.user === id &&
                 <Button
                 style={{marginLeft: 10}} 
                 variant="contained" 
