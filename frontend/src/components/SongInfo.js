@@ -230,7 +230,7 @@ export const SongInfo = (props) => {
                 </Button>
                 }
                 </div>
-               {renderCreator}
+            {renderCreator}
                 </div>
                 :
                 <div>

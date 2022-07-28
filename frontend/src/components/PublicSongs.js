@@ -22,6 +22,7 @@ export const PublicSongs = () => {
             dispatch(reset());
         }
     }, [dispatch, isError, message]);
+
     // Filter based on tags
     useEffect (() => {
         dispatch(getPublicSongs({query: 'tags', package: selectedTags}));

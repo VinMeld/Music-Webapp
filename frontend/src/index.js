@@ -19,7 +19,7 @@ import {CssBaseline} from "@mui/material";
 window.React1 = require('react');
 const darkTheme = createTheme({
   palette: {
-    mode: 'dark',
+      mode: 'dark',
   },
   spacing: 8,
 });

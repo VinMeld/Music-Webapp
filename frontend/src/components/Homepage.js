@@ -24,17 +24,17 @@ export const Homepage = () => {
             <div style={{display: 'flex', justifyContent: 'center', marginTop: '10%'}}>
             <img src={logo} style={{width: "15%", height: "15%", margin: 10}}alt="music" />
             <nav style={{display: "flex", alighItems:"center", flexDirection: 'column', flexWrap: 'wrap'}}>
-                <Link to="/songs">
-                    <Button>Songs</Button>
+                <Link to="/songs" style={{textDecoration: 'none'}}>
+                    <Button style={{color: 'white'}} >Songs</Button>
                 </Link>
                 {user &&
-                    <Link to="/favouritesongs">
-                        <Button color="secondary">Favourite Songs</Button>
+                    <Link style={{textDecoration: 'none'}} to="/favouritesongs">
+                        <Button style={{color: 'white'}} color="primary">Favourite Songs</Button>
                     </Link>
                 }
                 {user ? (
                     <div>
-                        <Button variant="contained" color="primary" onClick={()=>{
+                        <Button style={{textDecoration: 'none'}} variant="contained" color="primary" onClick={()=>{
                             console.log("Logout!");
                             dispatch(logout());
                             dispatch(reset());
@@ -45,12 +45,12 @@ export const Homepage = () => {
                     </div>
                 ) : (
                     <div style={{display: 'flex', flexDirection: 'column'}}>
-                    <Link to="/login">
+                    <Link style={{textDecoration: 'none'}} to="/login">
                     <Button variant="contained" color="primary" >
                         Login
                     </Button>
                     </Link>
-                    <Link to="/createuser">
+                    <Link style={{textDecoration: 'none'}} to="/createuser">
                     <Button variant="contained" color="primary" style={{marginTop: 10}}>
                     Create User
                     </Button>

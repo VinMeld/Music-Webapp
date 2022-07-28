@@ -66,16 +66,16 @@ const mainLinks ={
               navigate("/");
             }} src={logo} style={{width: "3%", height: "3%", margin: 10}}alt="music" />
             <div style={mainLinks}>
-              <Link to="/">
+              <Link style={{textDecoration: 'none'}} to="/">
               <Button>Home</Button>
               </Link>
               {user && 
               
-              <Link to="/favouritesongs">
+              <Link style={{textDecoration: 'none'}} to="/favouritesongs">
                 <Button>Favourite Songs</Button>
               </Link>
               }
-              <Link to="/songs">
+              <Link style={{textDecoration: 'none'}} to="/songs">
                 <Button>Songs</Button>
               </Link>
              
@@ -103,10 +103,10 @@ const mainLinks ={
               </div>
 
             ) : (<div>
-              <Link to="/login" >
+              <Link style={{textDecoration: 'none'}} to="/login" >
                 <Button variant="contained">Login</Button>
               </Link>
-              <Link to="/createuser" >
+              <Link style={{textDecoration: 'none'}} to="/createuser" >
                 <Button variant="contained" style={{marginLeft: 10}}>Register</Button>
               </Link>
               </div>

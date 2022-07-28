@@ -19,6 +19,7 @@ export const FavouriteSongs = () => {
     const dispatch = useDispatch();
     const {user} = useSelector(state => state.auth);
     const {songs, isError, isLoading, message} = useSelector(state => state.songs);
+    const [username, setUsername] = useState('');
     const [selectedTags, setSelectedTags] = useState([]);
     // This needs to be at the top for some reason, but it queries for the tags that were selected
     useEffect (() => {
@@ -37,12 +38,18 @@ export const FavouriteSongs = () => {
             toast.error(message);
         }
         dispatch(getSongs(null));
-
+        if(user){
+            if(user.name){
+                setUsername(user.name);
+            } else if(user.user.name){
+                setUsername(user.user.name);
+            }
+        }
         return () => {
             dispatch(reset());
         }
     }, [user ,dispatch, isError, message]);
-  
+    
     // Making sure that it's a youtube url
     const retrieveID = (url) => {
         var regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -126,7 +133,7 @@ export const FavouriteSongs = () => {
         <div style={style.main}>
             <div style={style.header}>
                 
-                    <h1 style={{display: 'flex', alignItems: 'center', justifyContent:'center'}}>Favourite Songs of {user && user.user.name}!</h1>
+                    <h1 style={{display: 'flex', alignItems: 'center', justifyContent:'center'}}>Favourite Songs of {user && username}!</h1>
                     <DisplayFilters selectedTags={selectedTags} sortByQuery={sortByQuery} setSelectedTags={setSelectedTags} tagsList={tagsList} searchForSong={searchForSong}/>
                 
             </div>
@@ -134,7 +141,7 @@ export const FavouriteSongs = () => {
                 <Grid container spacing={3}>
                     {  songs && songs.length > 0 &&
                         songs.map(song => {
-                            return(
+                            return (
                                     <SongInfo song={song} title={song.title} description={song.description} image={song.link}  />
                             );
                         })
