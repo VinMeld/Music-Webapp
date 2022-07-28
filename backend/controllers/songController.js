@@ -164,6 +164,35 @@ const getPublicSongs = asyncHandler (async (req, res) => {
     }
     res.status(200).json(songs);
 })
+//@desc Get List of Song Ids by user Id
+//@route GET /api/songs/getSongIdsByUserId/:id
+//@access Private
+const getSongIdsByUserId = asyncHandler (async (req, res) => {
+    //Only get list of song ids by user id
+    const songs = await Song.find({user: req.params.id});
+    if(!songs){
+        res.status(404);
+        throw new Error('No songs found');
+    }
+    //List of song ids
+    let songIds = [];
+    for(let i = 0; i < songs.length; i++){
+        songIds.push(songs[i]._id);
+    }
+    res.status(200).json(songIds);
+})
+//@desc Get song by id
+//@route GET /api/songs/getSongById/:id
+//@access Private
+const getSongById = asyncHandler (async (req, res) => {
+    const song = await Song.findById(req.params.id);
+    if(!song){
+        res.status(404);
+        throw new Error('Song not found');
+    }
+    res.status(200).json(song);
+})
+
 //@desc Check if song already exists
 //@route GET /api/songs/checkSong/:title/
 //@access Public
@@ -209,7 +238,7 @@ const likeSong = asyncHandler (async (req, res) => {
     res.status(200).json(updatedSong);
 })
 //@desc Get songs and sort it based on query
-//@route POST /api/sortCurrentSongs/:query
+//@route GET /api/sortCurrentSongs/:query
 //@access Public
 const sortCurrentSongs = asyncHandler (async (req, res) => {
     // get the current songs and see if they aren't null
@@ -231,7 +260,7 @@ const sortCurrentSongs = asyncHandler (async (req, res) => {
     return res.status(200).json(songs);
 })
 //@desc Use current songs to filter by tags
-//@route POST /api/filterCurrentSongs/:tags
+//@route GET /api/filterCurrentSongs/:tags
 //@access Public
 const filterCurrentSongs = asyncHandler (async (req, res) => {
     // get the current songs and see if they aren't null
@@ -269,6 +298,34 @@ const filterCurrentSongs = asyncHandler (async (req, res) => {
     })
     return res.status(200).json(songs);
 })
+//@desc Send public songs in a list of ids
+//@route GET /api/getPublicSongsIds/
+//@access Public
+const getPublicSongsIds = asyncHandler (async (req, res) => {
+    const songs = await Song.find({public: true});
+    if(!songs){
+        res.status(404);
+        throw new Error('No songs found');
+    }
+    let songIds = [];
+    for(let i = 0; i < songs.length; i++){
+        songIds.push(songs[i]._id);
+    }
+    res.status(200).json(songIds);
+})
+//@desc get public songs by id
+//@route GET /api/getPublicSongsById/:id
+//@access Public
+const getPublicSongById = asyncHandler (async (req, res) => {
+    const song = await Song.findById(req.params.id);
+    if(!song){
+        res.status(404);
+        throw new Error('Song not found');
+    }
+    res.status(200).json(song);
+})
+
+
 //@desc Search for songs based on provided songs and query
 //@route POST /api/searchCurrentSongs/:query
 //@access Public
@@ -295,5 +352,9 @@ module.exports = {
     checkSong,
     sortCurrentSongs,
     filterCurrentSongs,
-    searchCurrentSongs
+    searchCurrentSongs,
+    getSongIdsByUserId,
+    getSongById,
+    getPublicSongsIds,
+    getPublicSongById,
 }

@@ -1,7 +1,15 @@
 # How to run 
-Run "npm i" in both the front end and back end. 
-I haven't sent up concurrency yet, so you'll have to run the back end and front end seperately.
-To run, do "npm start" in front and "npm run server" in back. A .env is required for the backend, DM me for the values.
+Run "npm i" in the root directory, the backend and frontend directories. 
+To execute the program, you need to run both the backend and frontend. 
+2 ways of doing so, individually or concurrently.
+Individually:
+1. In backend run "npm run server"
+2. In frontend run "npm start" 
+Concurrently:
+1. In root run "npm run dev"
+2. If it doesn't work make sure "concurrently" is installed, "npm i concurrently"
+
+Make sure the backend has a ".env" file, PM me for the details.
 
 # TODO
 - [x] Complete favourite songs stuff
