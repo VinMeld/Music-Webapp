@@ -1,6 +1,6 @@
 # Music web app!!
 [MusicApp](https://www.music.vinaycloud.ca)
-
+[Music](frontend/public/android-chrome-192x192.png)
 # How to edit
 Run "npm i" in the root directory, the backend and frontend directories. 
 To execute the program, you need to run both the backend and frontend. 
