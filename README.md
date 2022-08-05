@@ -1,5 +1,5 @@
 # Music web app!!
-Click image!
+## Click image!
 [![Music](frontend/public/android-chrome-192x192.png)](https://www.music.vinaycloud.ca)
 # How to edit
 Run "npm i" in the root directory, the backend and frontend directories. 
