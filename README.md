@@ -2,13 +2,13 @@
 ## Click image!
 [![Music](frontend/public/android-chrome-192x192.png)](https://www.music.vinaycloud.ca)
 
-###Features:
+### Features:
 - Create user login/logout
 - Create a song once signed in
 - Like song to save to Favourites
 - "Publish" a song to share on "Songs" page
 
-###Tools used to create App:
+### Tools used to create App:
 - React, Redux, NodeJS, Express & MongoDB
 
 # How to develop
