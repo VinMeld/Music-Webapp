@@ -1,7 +1,16 @@
 # Music web app!!
 ## Click image!
 [![Music](frontend/public/android-chrome-192x192.png)](https://www.music.vinaycloud.ca)
-# How to edit
+Features:
+- Create user login/logout
+- Create a song once signed in
+- Like song to save to Favourites
+- "Publish" a song to share on "Songs" page
+
+Tools used to create App:
+- React, Redux, NodeJS, Express & MongoDB
+
+# How to develop
 Run "npm i" in the root directory, the backend and frontend directories. 
 To execute the program, you need to run both the backend and frontend. 
 2 ways of doing so, individually or concurrently.
