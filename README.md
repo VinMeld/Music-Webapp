@@ -1,25 +1,17 @@
-# Music web app!!
-## Click image!
-[![Music](frontend/public/android-chrome-192x192.png)](https://www.music.vinaycloud.ca)
+# 🎵 Music Web App
 
-### Features:
-- Create user login/logout
-- Create a song once signed in
-- Like song to save to Favourites
-- "Publish" a song to share on "Songs" page
+Dive into a world of music and save your favorite moments. With the Music Web App, curate your collection, save favorites, and share them with the community.
 
-### Tools used to create App:
-- React, Redux, NodeJS, Express & MongoDB
+## 🖼️ Preview
+[![Music Web App Preview](frontend/public/android-chrome-192x192.png)](https://www.music.vinaycloud.ca)
 
-# How to develop
-Run "npm i" in the root directory, the backend and frontend directories. 
-To execute the program, you need to run both the backend and frontend. 
-2 ways of doing so, individually or concurrently.
-Individually:
-1. In backend run "npm run server"
-2. In frontend run "npm start" 
-Concurrently:
-1. In root run "npm run dev"
-2. If it doesn't work make sure "concurrently" is installed, "npm i concurrently"
+## 🌟 Features
+- **User Authentication**: Easily sign in and out.
+- **Song Creation**: Add new songs once you're signed in.
+- **Favourites**: Like a song to add it to your favourites.
+- **Sharing**: Publish a song and share it on the "Songs" page for everyone to enjoy.
 
-Make sure the backend has a ".env" file, PM me for the details.
+## 🛠 Tech Stack
+- React & Redux
+- NodeJS & Express
+- MongoDB
